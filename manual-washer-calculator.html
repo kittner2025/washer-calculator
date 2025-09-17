@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manual Washing Cost Calculator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 1400px; margin: 0 auto; padding: 20px; background: linear-gradient(135deg, #a8b2c5 0%, #8390a2 100%); min-height: 100vh; }
+        .container { background: white; border-radius: 15px; padding: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        .header { text-align: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 2px solid #f0f0f0; }
+        h1 { color: #2c3e50; margin: 10px 0; font-size: 2.2em; }
+        .subtitle { color: #7f8c8d; font-size: 1.1em; margin-bottom: 10px; }
+        .section { background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px; border-left: 5px solid #6c757d; }
+        .section h3 { margin-top: 0; color: #2c3e50; border-bottom: 2px solid #6c757d; padding-bottom: 10px; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; margin-top: 15px; }
+        .form-row { display: flex; align-items: center; margin-bottom: 15px; flex-wrap: wrap; }
+        label { width: 180px; font-weight: 500; color: #2c3e50; margin-right: 10px; }
+        input, select { padding: 8px; border: 2px solid #bdc3c7; border-radius: 5px; font-size: 14px; min-width: 100px; }
+        input[type="number"] { text-align: right; width: 100px; }
+        input:disabled { background-color: #ecf0f1; color: #7f8c8d; }
+        .unit { margin-left: 8px; color: #7f8c8d; font-size: 14px; white-space: nowrap; }
+        .results { background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; padding: 25px; border-radius: 10px; margin-top: 30px; }
+        .results h2 { margin-top: 0; text-align: center; font-size: 1.8em; }
+        .results-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 20px; }
+        .result-item { background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; text-align: center; }
+        .result-value { font-size: 1.5em; font-weight: bold; display: block; }
+        .result-label { font-size: 0.9em; opacity: 0.9; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Manual Washing Cost Calculator</h1>
+            <div class="subtitle">Estimate the costs of manual washing with a high-pressure unit.</div>
+        </div>
+
+        <div class="section">
+            <h3>⚙️ Washing Scenario & Equipment</h3>
+            <div class="form-grid">
+                 <div class="form-row">
+                    <label>Item to Wash:</label>
+                    <select id="itemType" style="flex-grow: 1;">
+                        <option value="e2tray">E2 Tray</option>
+                        <option value="buggy">200L Buggy</option>
+                        <option value="dolav">850L Dolav Container</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <label>Equipment Power:</label>
+                    <div><input type="number" id="washerPower" value="17.5" step="0.1" min="0"><span class="unit">kW</span></div>
+                </div>
+                 <div class="form-row">
+                    <label>Equipment Flow Rate:</label>
+                    <div><input type="number" id="waterFlow" value="12.67" step="0.1" min="0"><span class="unit">L/min</span></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h3>⚡ Electricity Costs</h3>
+            <div class="form-grid">
+                <div class="form-row"><label>Electricity Price:</label><div><input type="number" id="electricityPrice" value="0.30" step="0.01" min="0"><span class="unit">€/kWh</span></div></div>
+                <div class="form-row"><label>Per Item (calculated):</label><div><input type="number" id="electricityPerItem" disabled><span class="unit">kWh</span></div></div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>💧 Water Costs</h3>
+            <div class="form-grid">
+                <div class="form-row"><label>Water Price:</label><div><input type="number" id="waterPrice" value="4.00" step="0.1" min="0"><span class="unit">€/m³</span></div></div>
+                <div class="form-row"><label>Per Item (calculated):</label><div><input type="number" id="waterPerItem" disabled><span class="unit">liters</span></div></div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>🧴 Detergent Costs</h3>
+            <div class="form-grid">
+                <div class="form-row"><label>Detergent Price:</label><div><input type="number" id="detergentPrice" value="15.00" step="0.1" min="0"><span class="unit">€/liter</span></div></div>
+                <div class="form-row"><label>Detergent per Item:</label><div><input type="number" id="detergentAmount" value="0.030" step="0.001" min="0"><span class="unit">liters</span></div></div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h3>👷 Labor Costs</h3>
+            <div class="form-grid">
+                <div class="form-row"><label>Hourly Rate:</label><div><input type="number" id="laborRate" value="30.00" step="0.1" min="0"><span class="unit">€/hour</span></div></div>
+                <div class="form-row"><label>Washing Time:</label><div><input type="number" id="timePerItem" value="90" step="1" min="0"><span class="unit">seconds</span></div></div>
+            </div>
+        </div>
+
+        <div class="results">
+            <h2>💰 Detailed Cost Analysis per Item</h2>
+            <div class="results-grid">
+                <div class="result-item"><span class="result-value" id="electricityCost">€0.000</span><div class="result-label">Electricity</div></div>
+                <div class="result-item"><span class="result-value" id="waterCost">€0.000</span><div class="result-label">Water</div></div>
+                <div class="result-item"><span class="result-value" id="detergentCost">€0.000</span><div class="result-label">Detergent</div></div>
+                <div class="result-item"><span class="result-value" id="laborCost">€0.000</span><div class="result-label">Labor</div></div>
+            </div>
+            <div class="result-item" style="margin: 20px auto 0 auto; max-width: 250px;">
+                <span class="result-value" id="totalCost">€0.000</span>
+                <div class="result-label">Total Cost per Item</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const presets = {
+            e2tray: { time: 90, detergent: 0.030 },
+            buggy: { time: 240, detergent: 0.080 },
+            dolav: { time: 480, detergent: 0.160 }
+        };
+
+        function getValue(id) { return parseFloat(document.getElementById(id).value) || 0; }
+
+        function calculateManualCost() {
+            // Get all input values
+            const timePerItemSec = getValue('timePerItem');
+            const washerPowerKW = getValue('washerPower');
+            const waterFlowLPM = getValue('waterFlow');
+            const detergentAmountL = getValue('detergentAmount');
+            const elecPrice = getValue('electricityPrice');
+            const waterPrice = getValue('waterPrice');
+            const detergentPrice = getValue('detergentPrice');
+            const laborRate = getValue('laborRate');
+
+            // --- Intermediate Calculations ---
+            const timePerItemHours = timePerItemSec / 3600;
+            const electricityPerItem = washerPowerKW * timePerItemHours;
+            const waterPerItem = (waterFlowLPM / 60) * timePerItemSec;
+
+            // Update disabled "Per Item (calculated)" fields
+            document.getElementById('electricityPerItem').value = electricityPerItem.toFixed(4);
+            document.getElementById('waterPerItem').value = waterPerItem.toFixed(2);
+
+            // --- Final Cost Calculations ---
+            const elecCost = electricityPerItem * elecPrice;
+            const waterCost = (waterPerItem / 1000) * waterPrice;
+            const detergentCost = detergentAmountL * detergentPrice;
+            const laborCost = timePerItemHours * laborRate;
+            const total = elecCost + waterCost + detergentCost + laborCost;
+
+            // Update result fields
+            document.getElementById('electricityCost').textContent = '€' + elecCost.toFixed(3);
+            document.getElementById('waterCost').textContent = '€' + waterCost.toFixed(3);
+            document.getElementById('detergentCost').textContent = '€' + detergentCost.toFixed(3);
+            document.getElementById('laborCost').textContent = '€' + laborCost.toFixed(3);
+            document.getElementById('totalCost').textContent = '€' + total.toFixed(3);
+        }
+
+        function updatePrices(data) {
+            if (data.electricityPrice) document.getElementById('electricityPrice').value = parseFloat(data.electricityPrice).toFixed(2);
+            if (data.waterPrice) document.getElementById('waterPrice').value = parseFloat(data.waterPrice).toFixed(2);
+            if (data.detergentPrice) document.getElementById('detergentPrice').value = parseFloat(data.detergentPrice).toFixed(2);
+            if (data.laborRate) document.getElementById('laborRate').value = parseFloat(data.laborRate).toFixed(2);
+            calculateManualCost();
+        }
+        
+        function loadPreset() {
+            const selectedType = document.getElementById('itemType').value;
+            const preset = presets[selectedType];
+            if (preset) {
+                document.getElementById('timePerItem').value = preset.time;
+                document.getElementById('detergentAmount').value = preset.detergent;
+                calculateManualCost();
+            }
+        }
+
+        window.addEventListener('message', (event) => {
+            if (event.origin.includes('github.io')) {
+                updatePrices(event.data);
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            
+            const itemToSelect = params.get('type');
+            if (itemToSelect && presets[itemToSelect]) {
+                document.getElementById('itemType').value = itemToSelect;
+            }
+            // Първо зареждаме пресета, за да се попълнят време и препарат
+            loadPreset(); 
+
+            // След това зареждаме цените от URL-а
+            const initialData = {
+                electricityPrice: params.get('elec'),
+                waterPrice: params.get('water'),
+                det: params.get('det'),
+                labor: params.get('labor')
+            };
+            const mappedData = {
+                electricityPrice: initialData.electricityPrice,
+                waterPrice: initialData.waterPrice,
+                detergentPrice: initialData.det,
+                laborRate: initialData.labor
+            };
+            updatePrices(mappedData);
+
+            // Закачаме събитията след като всичко е заредено
+            document.querySelectorAll('input, select').forEach(element => {
+                element.addEventListener('input', calculateManualCost);
+            });
+            document.getElementById('itemType').addEventListener('change', loadPreset);
+        });
+    </script>
+</body>
+</html>
